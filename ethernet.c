@@ -13,6 +13,7 @@
 //kan returnere NULL
 char* eth0_ip_get() {
 
+    //test
     struct ifaddrs *ifaddr, *ifa;
     int family;
 
