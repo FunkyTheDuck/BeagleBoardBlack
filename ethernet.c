@@ -39,16 +39,19 @@ char* eth0_ip_get() {
                 perror("malloc");
                 exit(EXIT_FAILURE);
             }
+            //kaster interfacet til IPv4 struktur
             struct sockaddr_in *addr = (struct sockaddr_in *)ifa->ifa_addr;
+            //bagefter konvateres den fra binær til mennskelig læsbar
             if (inet_ntop(AF_INET, &addr->sin_addr, ip_address, INET_ADDRSTRLEN) == NULL) {
                 perror("inet_ntop");
                 exit(EXIT_FAILURE);
             }
+            //frigør RAM allokeret af getifaddrs
             freeifaddrs(ifaddr);
             return ip_address;
         }
     }
-
+    //frigør RAM allokeret af getifaddrs
     freeifaddrs(ifaddr);
 
     return NULL;

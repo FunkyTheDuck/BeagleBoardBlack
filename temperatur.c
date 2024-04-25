@@ -41,7 +41,7 @@ int temp_init(char *bus, unsigned int address) {
         }
         return(file);
 }
-
+//function til at hente temperaturen
 double temp_get() {
     char revision; //To store MCP9808 revision ID - Perhaps useful in the future
         int file;

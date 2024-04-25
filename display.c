@@ -29,9 +29,13 @@ void lcd_command(int fd, unsigned char command) {
         exit(1);
     }
 }
+//function til at skrive en char til ud til displayet
+//x er linjen den skal stå på og y er rækken den skal stå på
+//display_register er registeren og data er den char som skal printes   
 void write_data(int fd, int x, int y, unsigned char display_register, char data) {
     unsigned char buf[2]; // data to Display
     
+    //laver et if statement til at tjekke på om hvor data skal stå henne
     if(x == 1) {
         i2c_smbus_write_word_data(fd, 0x00, y + 0x80);
     } else if(x == 2) {
@@ -40,27 +44,19 @@ void write_data(int fd, int x, int y, unsigned char display_register, char data)
 
     buf[0] = display_register; // Control byte for data
     buf[1] = data; // Char to display
+    //køre en write function som skrive char'en til displayet
     if (write(fd, buf, 2) != 2) // write to display, 2 is size
     {
         perror("Write failed \n");
         exit(1);
     }
 }
-
-void lcd_data(int fd, unsigned char data) {
-    unsigned char buf[2]; // data to Display
-    buf[0] = 0x40; // Control byte for data
-    buf[1] = data; // Char to display
-    if (write(fd, buf, 2) != 2) // write to display, 2 is size
-    {
-        perror("Write failed");
-        exit(1);
-    }
-}
+//function til at ændre baggrunds farven på displayet
 void turn_display_color(unsigned char rgb_register, unsigned char data) {
     unsigned char buf[2]; // data to Display
     buf[0] = rgb_register; // Control byte for data
     buf[1] = data;
+    //køre en write function som skrive farven til displayet
     if (write(i2c_rgb, buf, 2) != 2) // write to display, 2 is size
     {
         printf("Write failed");
@@ -123,18 +119,25 @@ void display_color_temperatur(int temp) {
     }
 
 }
+//function som kaldes for at ændre baggrunds farven af display til hvid  
 void display_color_white() {
     turn_display_color(0x00, 0x00);
     turn_display_color(0x08, 0x15);
 }
+//function til at skrive en ip addresse til displayet
+//parameteren er ip addressen
 void display_write_ipaddress(const char* ip) {
     printf("%s \n", ip);
+    //looper igennem størrelsen på stringen også kalder write_data med de parameter den skal have
     for (int i = 0; i < strlen(ip); i++) {
         write_data(i2c_fd, 1, i, 0x40, ip[i]);
     }
 }
+//function til at skrive en tiden til displayet
+//parameteren er tiden
 void display_write_time(const char* time) {
     printf("%s \n", time);
+    //looper igennem størrelsen på stringen også kalder write_data med de parameter den skal have
     for(int i = 0; i < strlen(time); i++) {
         write_data(i2c_fd, 2, i + 11, 0x40, time[i]);
     }
